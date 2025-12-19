@@ -14,6 +14,7 @@ app.use(cors({ origin: true }))
 // app.use('/api/sendmessage', require('./routes/twilio'))
 // app.use('/api/sendemail', require('./routes/email'))
 app.use('/api/auth', require('./routes/auth'))
+app.use('/api/posts', require('./routes/post'))
 
 
 app.listen(port, () => {

@@ -1,0 +1,5 @@
+runtime: nodejs22
+service: metatechbeex
+handlers:
+  - url: /.*
+    script: auto
