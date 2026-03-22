@@ -11,12 +11,10 @@ app.use(fileupload({
 app.use(express.json())
 app.use(cors({ origin: true }))
 
-// app.use('/api/sendmessage', require('./routes/twilio'))
-// app.use('/api/sendemail', require('./routes/email'))
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/posts', require('./routes/post'))
-
+app.use('/api/portfolio', require('./routes/portfolio'))  // ← NEW LINE
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`Example app listening on port ${port}`);
 })
