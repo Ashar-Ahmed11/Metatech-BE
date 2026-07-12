@@ -2,6 +2,41 @@ const express = require('express')
 const router = express.Router()
 const fetchAdmin = require('../middleware/fetchadmin')
 const Post = require('../models/post')
+const Portfolio = require('../models/portfolio')
+
+const CLOUDINARY_CLOUD_NAME = 'jvwuwauz'
+const CLOUDINARY_UPLOAD_PRESET = 'for_migration'
+const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`
+
+const isMigratedCloudinaryUrl = (url) => (
+  typeof url === 'string' && url.includes(`res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/`)
+)
+
+const uploadImageToCloudinary = async (imageUrl) => {
+  const formData = new FormData()
+  formData.append('file', imageUrl)
+  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET)
+  console.log('fetch request started')
+
+  const response = await fetch(CLOUDINARY_UPLOAD_URL, {
+    method: 'POST',
+    body: formData
+  })
+  console.log('fetch request finished')
+
+  const data = await response.json()
+  console.log(data)
+
+  if (!response.ok) {
+    throw new Error(data.error?.message || 'Cloudinary upload failed')
+  }
+
+  return data.secure_url || data.url
+}
+
+const getCloudinaryFetchUrl = (imageUrl) => (
+  `https://res.cloudinary.com/dextrzp2q/image/fetch/q_60/w_1000/h_1000/${imageUrl}`
+)
 
 const slugify = (s = '') => s.toString().toLowerCase().trim()
   .replace(/[_\s]+/g, '-')
@@ -42,6 +77,102 @@ router.get('/slug/:slug', async (req, res) => {
   }
 })
 
+router.post('/migrate-images', async (req, res) => {
+  const summary = {
+    portfoliosChecked: 0,
+    portfoliosUpdated: 0,
+    postsChecked: 0,
+    postsUpdated: 0,
+    imagesMigrated: 0,
+    imagesSkipped: 0,
+    imagesFailed: 0,
+    failures: []
+  }
+
+  try {
+    const portfolios = await Portfolio.find()
+    summary.portfoliosChecked = portfolios.length
+
+    for (const portfolio of portfolios) {
+      let portfolioChanged = false
+      const images = Array.isArray(portfolio.images) ? portfolio.images : []
+
+      for (let index = 0; index < images.length; index++) {
+        const image = images[index]
+        const currentUrl = image && image.url
+
+        if (!currentUrl || isMigratedCloudinaryUrl(currentUrl)) {
+          summary.imagesSkipped++
+          continue
+        }
+
+        try {
+          console.log('started')
+
+          const cloudinaryUrl = await uploadImageToCloudinary(getCloudinaryFetchUrl(currentUrl))
+          console.log(cloudinaryUrl)
+          images[index].url = cloudinaryUrl
+          portfolioChanged = true
+          summary.imagesMigrated++
+        } catch (error) {
+          summary.imagesFailed++
+          summary.failures.push({
+            portfolioId: portfolio._id,
+            imageIndex: index,
+            url: currentUrl,
+            error: error.message
+          })
+        }
+      }
+
+      if (portfolioChanged) {
+        portfolio.markModified('images')
+        await portfolio.save()
+        summary.portfoliosUpdated++
+      }
+    }
+
+    const posts = await Post.find()
+    summary.postsChecked = posts.length
+
+    for (const post of posts) {
+      const currentUrl = post.image
+
+      if (!currentUrl || isMigratedCloudinaryUrl(currentUrl)) {
+        summary.imagesSkipped++
+        continue
+      }
+
+      try {
+        console.log('started')
+
+        const cloudinaryUrl = await uploadImageToCloudinary(getCloudinaryFetchUrl(currentUrl))
+        console.log(cloudinaryUrl)
+        post.image = cloudinaryUrl
+        await post.save()
+        summary.postsUpdated++
+        summary.imagesMigrated++
+      } catch (error) {
+        summary.imagesFailed++
+        summary.failures.push({
+          postId: post._id,
+          field: 'image',
+          url: currentUrl,
+          error: error.message
+        })
+      }
+    }
+
+    res.send(summary)
+  } catch (error) {
+    console.error(error.message)
+    res.status(500).send({
+      message: 'Internal Server Error',
+      summary
+    })
+  }
+})
+
 // Get single post
 router.get('/:id', async (req, res) => {
   try {
@@ -79,4 +210,3 @@ router.delete('/:id', fetchAdmin, async (req, res) => {
 })
 
 module.exports = router
-
