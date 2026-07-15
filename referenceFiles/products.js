@@ -196,7 +196,7 @@ router.post('/migrate-images', async (req, res) => {
         try {
           console.log('started');
           
-          const cloudinaryUrl = await uploadImageToCloudinary(`https://res.cloudinary.com/dextrzp2q/image/fetch/q_60/w_1000/h_1000/${currentUrl}`)
+          const cloudinaryUrl = await uploadImageToCloudinary(`https://res.cloudinary.com/jvwuwauz/image/fetch/q_60/w_1000/h_1000/${currentUrl}`)
           console.log(cloudinaryUrl)
           assets[index].url = cloudinaryUrl
           productChanged = true

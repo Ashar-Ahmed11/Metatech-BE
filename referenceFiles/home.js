@@ -57,7 +57,7 @@ const migrateImageFields = async(document, fields, type, summary) => {
         }
 
         try {
-            document[field] = await uploadImageToCloudinary(`https://res.cloudinary.com/dextrzp2q/image/fetch/q_60/${currentUrl}`)
+            document[field] = await uploadImageToCloudinary(`https://res.cloudinary.com/jvwuwauz/image/fetch/q_60/${currentUrl}`)
             documentChanged = true
             summary.imagesMigrated++
         } catch (error) {
@@ -85,14 +85,14 @@ router.post('/createhome', async(req, res) => {
 
         const data = {
             user: admin._id,
-            mainCarousalImgDesktop:'https://res.cloudinary.com/dextrzp2q/image/upload/v1678537550/knpz1pszgqkze7iwv3hm.avif',
-          mainCarousalImgPhone: 'https://res.cloudinary.com/dextrzp2q/image/upload/v1677446793/piefl0qw89izkoh300fd.png',
+            mainCarousalImgDesktop:'https://res.cloudinary.com/jvwuwauz/image/upload/v1678537550/knpz1pszgqkze7iwv3hm.avif',
+          mainCarousalImgPhone: 'https://res.cloudinary.com/jvwuwauz/image/upload/v1677446793/piefl0qw89izkoh300fd.png',
             firstHeading: 'Fresh Arrivals',
             secondSmallPara: 'A Newly Updated Look',
             secondSmallHead: 'Nukhba',
             secondSmallParaTwo: 'Now designed for a seamless experience, your daily dose of leather.',
             secondSmallParaThree: 'We are getting ready for a "grand gesture" with new products under development and a brand-new definition of lifestyle under creation.',
-            bodyImg: 'https://res.cloudinary.com/dextrzp2q/image/upload/v1676748951/xyxuzlzsmnyr7mbjse4m.png',
+            bodyImg: 'https://res.cloudinary.com/jvwuwauz/image/upload/v1676748951/xyxuzlzsmnyr7mbjse4m.png',
             thirdSmallPara: 'Designed for Simplicity',
             thirdSmallHead: 'Crafts that age elegantly',
             thirdSmallParaTwo: 'Our trademark is a traditional cut presented in a contemporary serving style, created to meet the demands of todays dynamic world.',
@@ -100,8 +100,8 @@ router.post('/createhome', async(req, res) => {
             fourSmallPara: 'When Nukhba was established, it had big plans:',
             fourSmallParaTwo: 'To successfully enter the local market with goods that most closely match the description of international manufacturing standards while keeping the price cap within the means of the average domestic customer, and this trip has a narrative...',
             secondHeading: 'Featured Ones',
-            footerCarousalImgDesktop: 'https://res.cloudinary.com/dextrzp2q/image/fetch/f_webp/q_60/https://res.cloudinary.com/dextrzp2q/image/upload/v1676748976/tbgvwfdtgixrwqoj0ldn.png',
-            footerCarousalImgPhone: 'https://res.cloudinary.com/dextrzp2q/image/fetch/f_webp/q_60/https://res.cloudinary.com/dextrzp2q/image/upload/v1676748998/aikg308x1vsartenlm4p.png'
+            footerCarousalImgDesktop: 'https://res.cloudinary.com/jvwuwauz/image/fetch/f_webp/q_60/https://res.cloudinary.com/jvwuwauz/image/upload/v1676748976/tbgvwfdtgixrwqoj0ldn.png',
+            footerCarousalImgPhone: 'https://res.cloudinary.com/jvwuwauz/image/fetch/f_webp/q_60/https://res.cloudinary.com/jvwuwauz/image/upload/v1676748998/aikg308x1vsartenlm4p.png'
         }
 
         const home = await Home.create(data)
@@ -123,8 +123,8 @@ router.post('/createcategory', async (req, res) => {
 
         const data = {
             user: admin._id,
-            mainCarousalImgDesktop: 'https://res.cloudinary.com/dextrzp2q/image/upload/v1767213381/b7jwkdkux1dhiytkqhuh.jpg',
-            mainCarousalImgPhone: 'https://res.cloudinary.com/dextrzp2q/image/upload/v1767213394/hknpzfukkaxnueyyqair.jpg',
+            mainCarousalImgDesktop: 'https://res.cloudinary.com/jvwuwauz/image/upload/v1767213381/b7jwkdkux1dhiytkqhuh.jpg',
+            mainCarousalImgPhone: 'https://res.cloudinary.com/jvwuwauz/image/upload/v1767213394/hknpzfukkaxnueyyqair.jpg',
             mainHeading: req.body.mainHeading,
             firstHeading: req.body.mainHeading,
             firstSmallPara: "The best addition to any kitchen is high-quality spices. For those who value authentic taste and rich aroma, premium spices are an essential choice. There is a reason why carefully sourced spices are trusted worldwide; they are considered a symbol of purity, freshness, and superior quality.",

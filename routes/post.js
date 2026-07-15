@@ -35,7 +35,7 @@ const uploadImageToCloudinary = async (imageUrl) => {
 }
 
 const getCloudinaryFetchUrl = (imageUrl) => (
-  `https://res.cloudinary.com/dextrzp2q/image/fetch/q_60/w_1000/h_1000/${imageUrl}`
+  `https://res.cloudinary.com/jvwuwauz/image/fetch/q_60/w_1000/h_1000/${imageUrl}`
 )
 
 const slugify = (s = '') => s.toString().toLowerCase().trim()
